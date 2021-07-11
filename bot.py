@@ -43,6 +43,13 @@ async def get_group_members(group_id):
   result = await acc(uri, [])
   return result
 
+async def send_embed(embed):
+  try:
+    channel = bot.get_channel(config.CHANNEL_ID)
+    await channel.send(embed=embed)
+  except:
+    print(f'enable to send in the channel {config.CHANNEL_ID}')
+
 class GameStartEmbed(discord.Embed):
   """Embed sended when the scraper find a new game."""
   def __init__(self, game):
@@ -125,8 +132,7 @@ class Scraper(commands.Cog):
       new_games = [game for game in games if self.is_new_game(game)]
       for game in new_games:
         self.cache[game['id']] = game
-        channel = self.bot.get_channel(config.CHANNEL_ID)
-        await channel.send(embed=GameStartEmbed(game))
+        await send_embed(GameStartEmbed(game))
     else:
       self.curr_idx = -1
 
@@ -145,8 +151,7 @@ class Scraper(commands.Cog):
       if game['ended']:
         self.cache.pop(game_id)
         if game['outcome'] != 'Cancellation':
-          channel = self.bot.get_channel(config.CHANNEL_ID)
-          await channel.send(embed=GameFinishEmbed(game))
+          await send_embed(GameFinishEmbed(game))
 
   @scrap.before_loop
   async def before_scrap(self):
