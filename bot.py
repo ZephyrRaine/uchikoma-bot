@@ -5,6 +5,8 @@ import discord
 from discord.ext import commands, tasks
 from aiohttp import request
 
+bot = commands.Bot(command_prefix='!')
+
 async def get_player(player_id):
   """get player details"""
   uri = f'{config.HOST}/players/{player_id}/'
@@ -131,11 +133,13 @@ class Scraper(commands.Cog):
   @tasks.loop(seconds=config.INTERVAL)
   async def scrap(self):
     """scrap next player or reset if the scraper has finished a cycle"""
+    print(f'scraping {self.curr_idx}')
     return await self.reset() if self.curr_idx < 0 else await self.scrap_next_player()
 
   @tasks.loop(seconds=config.CHECK_INTERVAL)
   async def check(self):
     """browse all cached games and notify finished ones"""
+    print(f'checking {len(self.cache)}')
     for game_id in list(self.cache):
       game = await get_game(game_id)
       if game['ended']:
@@ -144,6 +148,17 @@ class Scraper(commands.Cog):
           channel = self.bot.get_channel(config.CHANNEL_ID)
           await channel.send(embed=GameFinishEmbed(game))
 
-bot = commands.Bot(command_prefix='!')
+  @scrap.before_loop
+  async def before_scrap(self):
+    await self.bot.wait_until_ready()
+
+  @check.before_loop
+  async def before_check(self):
+    await self.bot.wait_until_ready()
+
+@bot.event
+async def on_ready():
+  print('Uchikoma is ready to work !')
+
 bot.add_cog(Scraper(bot))
 bot.run(os.environ["BOT_TOKEN"])
