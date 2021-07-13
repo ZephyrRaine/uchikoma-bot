@@ -48,7 +48,7 @@ async def send_embed(embed):
     channel = bot.get_channel(config.CHANNEL_ID)
     await channel.send(embed=embed)
   except:
-    print(f'enable to send in the channel {config.CHANNEL_ID}')
+    print(f'unable to send in the channel {config.CHANNEL_ID}')
 
 class GameStartEmbed(discord.Embed):
   """Embed sended when the scraper find a new game."""
@@ -59,7 +59,7 @@ class GameStartEmbed(discord.Embed):
     color = 2895667
     emoji = 'crossed_swords'
     link = f'https://online-go.com/game/{id}/'
-    link_label = f'**{bl}** vs **{wh}**'
+    link_label = f'{bl} vs {wh}'
     desc = f':{emoji}: [{link_label}]({link}) a commencé !'
     super().__init__(color=color, description=desc)
 
@@ -75,7 +75,7 @@ class GameFinishEmbed(discord.Embed):
     emoji = 'crossed_swords'
     link = f'https://online-go.com/game/{game_id}/'
     loser = wh if wh_lost else bl
-    label = f'[**{bl}** vs **{wh}**]({link}) est terminé !'
+    label = f'[{bl} vs {wh}]({link}) est terminé !'
     res = game['outcome']
     win_color = 'noir' if wh_lost else 'blanc'
     desc = f':{emoji}: {label}\n\n'
