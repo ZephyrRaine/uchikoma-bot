@@ -45,8 +45,12 @@ async def get_group_members(group_id):
   return result
 
 async def send_embed(embed):
-    channel = bot.get_channel(config.CHANNEL_ID)
+  try:
+    channel = bot.get_channel(int(config.CHANNEL_ID))
     await channel.send(embed=embed)
+  except:
+    print(f'unable to send in the channel {config.CHANNEL_ID}')
+    print(sys.exc_info()[0])
 
 class GameStartEmbed(discord.Embed):
   """Embed sended when the scraper find a new game."""
