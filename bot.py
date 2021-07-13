@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import config
 import discord
@@ -49,6 +50,7 @@ async def send_embed(embed):
     await channel.send(embed=embed)
   except:
     print(f'unable to send in the channel {config.CHANNEL_ID}')
+    print(sys.exc_info()[0])
 
 class GameStartEmbed(discord.Embed):
   """Embed sended when the scraper find a new game."""
