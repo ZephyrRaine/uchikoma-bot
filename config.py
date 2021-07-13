@@ -1,13 +1,13 @@
+import os
+
 HOST = 'http://online-go.com/api/v1'
 
-# Id of the channel where the bot will display messages
-CHANNEL_ID = 808983149589692436
+CHANNEL_ID = os.environ["DISCORD_CHANNEL_ID"]
 
-# Id of the ogs's group where the scraper will crawl
-GROUP_ID = 8289
+BOT_TOKEN = os.environ["BOT_TOKEN"]
 
-# Scrap a new player each X seconds
+GROUP_ID = os.environ["OGS_GROUP_ID"]
+
 INTERVAL = 5
 
-# Check current cached games each X seconds
 CHECK_INTERVAL = 30

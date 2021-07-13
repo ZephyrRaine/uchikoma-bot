@@ -95,7 +95,7 @@ class Scraper(commands.Cog):
   The scraper has 2 independent tasks that run forever :
     - scrap: browse the player's list and get active games for each of them.
       when a live game is found, we notify the channel and cache the game.
-    - check.
+    - check: request details for each cached games and see if they are finished.
   """
   def __init__(self, bot):
     self.bot = bot
@@ -166,4 +166,4 @@ async def on_ready():
   print('Uchikoma is ready to work !')
 
 bot.add_cog(Scraper(bot))
-bot.run(os.environ["BOT_TOKEN"])
+bot.run(config.BOT_TOKEN)
