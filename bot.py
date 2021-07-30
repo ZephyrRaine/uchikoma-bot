@@ -92,7 +92,6 @@ class Scraper(commands.Cog):
     cached = self.cache.get(game['id'])
     bl = game['players']['black']['id'] in list_ids
     wh = game['players']['white']['id'] in list_ids
-    return live and not cached
     return bl and wh and live and not cached
 
   async def reset(self):
