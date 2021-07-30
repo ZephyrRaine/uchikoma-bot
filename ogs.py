@@ -1,5 +1,5 @@
 from aiohttp import request
-import localconfig as config
+import config as config
 
 async def get_player(player_id):
   """get player details"""
