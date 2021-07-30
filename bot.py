@@ -7,29 +7,26 @@ from discord.ext import commands, tasks
 bot = commands.Bot(command_prefix='!')
 
 async def select_channel(game):
-  """
-  When a cached game is finished, we get the sgf file
-  in order to get access to the chat.
-  From here, players can use keywords that will be interpreted
-  by the bot.
-  Only one keyword is processed currently. #vague
-  """
   channel_id = config.CHANNEL_ID
+  """
   if game['ended']:
     sgf = await ogs.get_sgf_game(game['id'])
     if re.search(config.TAG, sgf, re.IGNORECASE):
       channel_id = config.TAGGED_CHANNEL_ID
+  """
   return channel_id
 
 async def notify_game_start(game):
   channel_id = config.CHANNEL_ID
   channel = bot.get_channel(int(channel_id))
-  await channel.send(embed=GameStartEmbed(game))
+  if channel:
+    await channel.send(embed=GameStartEmbed(game))
 
 async def notify_game_finished(game):
   channel_id = await select_channel(game)
   channel = bot.get_channel(int(channel_id))
-  await channel.send(embed=GameFinishEmbed(game))
+  if channel:
+    await channel.send(embed=GameFinishEmbed(game))
 
 class GameStartEmbed(discord.Embed):
   """Embed sended when the scraper find a new game."""
