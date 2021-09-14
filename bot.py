@@ -2,34 +2,22 @@ import re
 import json
 import discord
 import ogs
-import config as config
+import config
 from discord.ext import commands, tasks
 bot = commands.Bot(command_prefix='!')
 
-async def select_channel(game):
-  channel_id = config.CHANNEL_ID
-  """
-  if game['ended']:
-    sgf = await ogs.get_sgf_game(game['id'])
-    if re.search(config.TAG, sgf, re.IGNORECASE):
-      channel_id = config.TAGGED_CHANNEL_ID
-  """
-  return channel_id
-
 async def notify_game_start(game):
-  channel_id = config.CHANNEL_ID
-  channel = bot.get_channel(int(channel_id))
+  channel = bot.get_channel(int(config.CHANNEL_ID))
   if channel:
     await channel.send(embed=GameStartEmbed(game))
 
 async def notify_game_finished(game):
-  channel_id = await select_channel(game)
-  channel = bot.get_channel(int(channel_id))
+  channel = bot.get_channel(int(config.CHANNEL_ID))
   if channel:
     await channel.send(embed=GameFinishEmbed(game))
 
 class GameStartEmbed(discord.Embed):
-  """Embed sended when the scraper find a new game."""
+  """Embed sended when a game starts"""
   def __init__(self, game):
     id = game['id']
     bl = game['players']['black']['username']
@@ -101,12 +89,6 @@ class Scraper(commands.Cog):
     self.players = await ogs.get_group_members(config.GROUP_ID)
     self.curr_idx = 0
 
-  @tasks.loop(seconds=config.INTERVAL)
-  async def scrap(self):
-    """scrap next player or reset if the scraper has finished a cycle"""
-    print(f'scraping {self.curr_idx}')
-    return await self.reset() if self.curr_idx < 0 else await self.scrap_next_player()
-
   async def scrap_next_player(self):
     """pick the next player of the list and notify his starting games."""
     if self.curr_idx < len(self.players):
@@ -119,6 +101,12 @@ class Scraper(commands.Cog):
         await notify_game_start(game)
     else:
       self.curr_idx = -1
+
+  @tasks.loop(seconds=config.INTERVAL)
+  async def scrap(self):
+    """scrap next player or reset if the scraper has finished a cycle"""
+    print(f'scraping {self.curr_idx}')
+    return await self.reset() if self.curr_idx < 0 else await self.scrap_next_player()
 
   @tasks.loop(seconds=config.CHECK_INTERVAL)
   async def check(self):
