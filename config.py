@@ -15,3 +15,5 @@ INTERVAL = 5
 
 # check running games in sec
 CHECK_INTERVAL = 30
+
+TAG = '#vague'
