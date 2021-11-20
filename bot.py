@@ -22,9 +22,8 @@ class GameStartEmbed(discord.Embed):
     id = game['id']
     bl = game['players']['black']['username']
     wh = game['players']['white']['username']
-    name = game['name']
     color = 2895667
-    emoji = 'shell' if config.TAG in name else 'crossed_swords'
+    emoji = 'shell' if re.search(config.TAG, game['name'], re.IGNORECASE) else 'crossed_swords'
     link = f'https://online-go.com/game/{id}/'
     link_label = f'{bl} vs {wh}'
 
@@ -38,11 +37,10 @@ class GameFinishEmbed(discord.Embed):
     bl = game['players']['black']['username']
     wh = game['players']['white']['username']
     wh_lost = game['white_lost']
-    name = game['name']
     color = 2895667
     winner = bl if wh_lost else wh
     loser = wh if wh_lost else bl
-    emoji = 'shell' if config.TAG in name else 'crossed_swords'
+    emoji = 'shell' if re.search(config.TAG, game['name'], re.IGNORECASE) else 'crossed_swords'
     link = f'https://online-go.com/game/{game_id}/'
     label = f'[{bl} vs {wh}]({link}) est terminé !'
     res = game['outcome']
