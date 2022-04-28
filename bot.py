@@ -131,7 +131,7 @@ class Scraper(commands.Cog):
 
 @bot.event
 async def on_ready():
-  print('Uchikoma is ready to work !')
+  print('Uchikoma is ready to work')
 
 bot.add_cog(Scraper(bot))
 bot.run(config.BOT_TOKEN)
