@@ -79,9 +79,10 @@ class Scraper(commands.Cog):
     time = json.loads(game['time_control_parameters'])
     live = time.get('speed') == 'live'
     cached = self.cache.get(game['id'])
+    paused = 'paused_since' in game['gamedata']
     bl = game['players']['black']['id'] in list_ids
     wh = game['players']['white']['id'] in list_ids
-    return bl and wh and live and not cached
+    return bl and wh and live and not cached and not paused
 
   async def reset(self):
     """
