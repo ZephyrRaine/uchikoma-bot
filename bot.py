@@ -11,6 +11,9 @@ from discord.ext import commands, tasks
 import time
 
 import osr
+import logging
+
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 
 intents = discord.Intents.all()
 bot = commands.Bot(intents=intents, command_prefix='/')
@@ -254,6 +257,15 @@ async def main():
         await bot.add_cog(cog)
         await bot.start(config.BOT_TOKEN)
 
+def _handle_task_result(task: asyncio.Task) -> None:
+    try:
+        task.result()
+    except asyncio.CancelledError:
+        pass  # Task cancellation should not be logged as an error.
+    except Exception:  # pylint: disable=broad-except
+        logging.exception('Exception raised by task = %r', task)
 
+discord.utils.setup_logging(handler=handler, level=logging.DEBUG)
 cog = Scraper(bot)
+
 asyncio.run(main())
