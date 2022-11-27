@@ -207,8 +207,7 @@ class Scraper(commands.Cog):
                 self.cachedEvents.pop(e)
         print(f"done checking events, {len(self.cachedEvents)} cached events")
 
-    #@tasks.loop(time=datetime.time(hour=7, minute=0, second=0))
-    @tasks.loop(seconds=10)
+    @tasks.loop(time=datetime.time(hour=7, minute=0, second=0))
     async def daily(self):
         """get all planned events for the day"""
         print("getting today events")
